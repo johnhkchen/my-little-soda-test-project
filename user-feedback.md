@@ -37,10 +37,25 @@ The tool still references the old project name "clambake" in multiple places:
 
 ## Recommendations
 
-1. **Update all "clambake" references to "my-little-soda"**
-2. **Update config directory from `.clambake/` to `.my-little-soda/`**
-3. **Consider making the init command more self-contained for first-time setup**
-4. **Ensure consistency between binary name and internal references**
+1. **URGENT: Complete rebrand from "clambake" to "my-little-soda"**
+   - Config directory: `.clambake/` → `.my-little-soda/`
+   - All log messages referencing "Clambake"
+   - Configuration field names and error messages
+   - Internal telemetry and database references
+
+2. **Improve init command user experience**
+   - Provide clear prerequisite checklist before running init
+   - Consider auto-initializing git repository if none exists
+   - Offer to create GitHub repository during init process
+   - Better error messages explaining what setup steps are missing
+
+3. **Fix GitHub integration issues**
+   - **Label creation error handling**: Tool fails when trying to create labels that already exist
+   - **Configuration persistence**: Creates `.clambake/credentials/` directory but doesn't properly save config
+   - **Missing field `owner` error**: Configuration file format appears broken or incomplete
+   - **Poor error recovery**: Tool exits completely on label creation failure instead of continuing
+   - Improve repository permission validation
+   - Handle existing vs new repository scenarios better
 
 ## Critical Issue: Git Repository Assumptions
 
@@ -60,6 +75,30 @@ The tool still references the old project name "clambake" in multiple places:
   - Create the GitHub repository as part of init
   - Clearly indicate it requires an existing GitHub repository
   - Work locally first before requiring remote repository
+
+### 8. **CRITICAL: Widespread Legacy "Clambake" References**
+After proper GitHub repository setup, the tool reveals extensive old project name usage:
+- **Config directory**: Creates `.clambake/` instead of `.my-little-soda/`
+- **Error messages**: "Failed to initialize configuration: Failed to load configuration: missing field `owner`"
+- **Log output**: Multiple "Clambake telemetry" references throughout execution
+- **Help text inconsistency**: Tool says "My Little Soda" in description but creates clambake directories
+- This is confusing for users who expect consistency with the tool name
+
+### 9. Git Repository Setup Requirements
+Tool requires specific git setup sequence:
+1. `git init` (local repository)
+2. Clean git state (committed files)
+3. `git remote add origin` (remote repository link)
+4. GitHub repository must exist before init
+Tool provides minimal guidance on these prerequisites
+
+### 10. GitHub API Integration Issues
+- **Labels created successfully** on first run (confirmed 21 labels created)
+- **Subsequent runs fail** trying to recreate existing labels with generic "GitHub" error
+- **Dry-run shows good planning** but doesn't detect existing labels
+- **Configuration corruption**: "missing field `owner`" error persists despite environment variables
+- Tool should detect and skip existing labels rather than failing completely
+- **Incomplete setup**: Tool creates directory structure but doesn't complete configuration
 
 ## Overall Assessment
 
